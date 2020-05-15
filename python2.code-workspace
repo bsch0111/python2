@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "C:\\Users\\morgan\\DEEPLEARNING\\PythonApplication1"
+		}
+	],
+	"settings": {
+		"python.dataScience.jupyterServerURI": "http://localhost:8888/?token=f4c49218ac3480d45a5e5299acaf74a09d77dc78b90170a5&token=f4c49218ac3480d45a5e5299acaf74a09d77dc78b90170a5"
+	}
+}
