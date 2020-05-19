@@ -234,7 +234,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
-from sklearn.metrics import confusion_matrixs
+from sklearn.metrics import confusion_matrix
 
 # %%
 train,test = train_test_split(data, test_size=0.3, random_state=0,stratify=data['Survived'])
@@ -270,34 +270,118 @@ prediction4=model.predict(test_X)
 print('The Accuracy of the Decision Tree is',metrics.accuracy_score(prediction4,test_Y))
 
 # %%
-model=KNeighborsClassifier
+model=KNeighborsClassifier()
+model.fit(train_X,train_Y)
+prediction5=model.predict(test_X)
+print("The accuracy of the KNN is",metrics.accuracy_score(prediction5, test_Y))
 
 # %%
+a_index = list(range(1,11))
+a=pd.Series()
+x=[0,1,2,3,4,5,6,7,8,9,10]
+for i in list(range(1,11)):
+    model=KNeighborsClassifier(n_neighbors=i)
+    model.fit(train_X,train_Y)
+    prediction=model.predict(test_X)
+    a=a.append(pd.Series(metrics.accuracy_score(prediction,test_Y)))
+plt.plot(a_index, a)
+plt.xticks(x)
+fig=plt.gcf()
+fig.set_size_inches(12,6)
+plt.show()
+print('Accuracies for different values of n are:', a.values, 'with the max value as', a.values.max())
+# %%
+model = GaussianNB()
+model.fit(train_X,train_Y)
+prediction6=model.predict(test_X)
+print('The accuracy of NaiveBayes is ', metrics.accuracy_score(prediction6, test_Y))
+
+# %%
+model = RandomForestClassifier(n_estimators=100)
+model.fit(train_X,train_Y)
+pridiction7=model.predict(test_X)
+print('The accuracy of the Random Forest is ',metrics.accuracy_score(pridiction7, test_Y))
 
 
 # %%
-
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import cross_val_predict
+kfold = KFold(n_splits=10, random_state=22)
+xyz=[]
+accuracy=[]
+std=[]
+classifiers=['Linear Svm', 'Radial Svm', 'Logistic Regression', 'KNN', 'Decision Tree', 'Naive Bayes', 'Random Forest']
+models=[svm.SVC(kernel='linear'),svm.SVC(kernel='rbf'),LogisticRegression(),KNeighborsClassifier(n_neighbors=9),DecisionTreeClassifier(),GaussianNB(),RandomForestClassifier(n_estimators=100)]
+for i in models:
+    model = i
+    cv_result = cross_val_score(model,X,Y, cv=kfold,scoring = "accuracy")
+    cv_result = cv_result
+    xyz.append(cv_result.mean())
+    std.append(cv_result.std())
+    accuracy.append(cv_result)
+new_models_dataframe2=pd.DataFrame({'CV Mean':xyz, 'Std':std}, index=classifiers)
+new_models_dataframe2
 
 # %%
-
-
-# %%
-
-
-# %%
-
+plt.subplots(figsize=(12,6))
+box=pd.DataFrame(accuracy,index=[classifiers])
+box.T.boxplot()
 
 # %%
-
-
-# %%
-
-
-# %%
-
+new_models_dataframe2['CV Mean'].plot.barh(width=0.8)
+plt.title('Average CV Mean Accuracy')
+fig=plt.gcf()
+fig.set_size_inches(8,5)
+plt.show()
 
 # %%
+f, ax = plt.subplots(3,3, figsize=(12,10))
+y_pred = cross_val_predict(svm.SVC(kernel='rbf'),X,Y,cv=10)
+sns.heatmap(confusion_matrix(Y,y_pred),ax=ax[0,0],annot=True,fmt='2.0f')
+ax[0,0].set_title('Matrix for rbf-SVM')
+y_pred = cross_val_predict(svm.SVC(kernel='linear'),X,Y,cv=10)
+sns.heatmap(confusion_matrix(Y,y_pred),ax=ax[0,1],annot=True,fmt='2.0f')
+ax[0,1].set_title('Matrix for Linear-SVM')
+y_pred = cross_val_predict(KNeighborsClassifier(n_neighbors=9),X,Y,cv=10)
+sns.heatmap(confusion_matrix(Y,y_pred),ax=ax[0,2], annot=True, fmt='2.0f')
+ax[0,2].set_title('Maxtrix for KNN')
 
+y_pred = cross_val_predict(RandomForestClassifier(n_estimators=100),X,Y,cv=10)
+sns.heatmap(confusion_matrix(Y,y_pred),ax=ax[1,0], annot=True, fmt='2.0f')
+ax[1,0].set_title('Matrix for Random-Forests')
+
+y_pred = cross_val_predict(LogisticRegression(),X,Y,cv=10)
+sns.heatmap(confusion_matrix(Y,y_pred),ax=ax[1,1], annot=True, fmt='2.0f')
+ax[1,1].set_title('Matrix for Logistic Regression')
+
+y_pred = cross_val_predict(DecisionTreeClassifier(), X, Y, cv=10)
+sns.heatmap(confusion_matrix(Y,y_pred), ax=ax[1,2], annot=True, fmt='2.0f')
+ax[1,2].set_title('Matrix for Decision Tree')
+y_pred = cross_val_predict(GaussianNB(),X,Y, cv=10)
+sns.heatmap(confusion_matrix(Y,y_pred),ax=ax[2,0], annot=True, fmt='2.0f')
+ax[2,0].set_title('Matrix for Naive Bayes')
+plt.subplots_adjust(hspace=0.2, wspace=0.2)
+plt.show()
+
+# %%
+from sklearn.model_selection import GridSearchCV
+C=[0.05, 0.1, 0.2, 0.3, 0.25, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+gamma = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+kernel = ['rbf','linear']
+hyper={ 'kernel': kernel, 'C':C, 'gamma':gamma}
+gd=GridSearchCV(estimator=svm.SVC(),param_grid=hyper, verbose=True)
+gd.fit(X,Y)
+print(gd.best_score_)
+print(gd.best_estimator_)
+
+# %%
+n_estimators=range(100,1000,100)
+hyper={'n_estimators':n_estimators}
+gd=GridSearchCV(estimator=RandomForestClassifier(random_state=0),param_grid=hyper,verbose=True)
+gd.fit(X,Y)
+print(gd.best_score_)
+print(gd.best_estimator_)
 
 # %%
 
