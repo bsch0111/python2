@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
  # %%
-base_dir = "C:/inputcsv/painting/conUNSOUNG/FAMILY(PAI, UN-SOUNG)/3. Material Analysis/3.2 Basic Analysis/3.2.2 Chromaticity"
+base_dir = "C:/inputcsv/painting/conUNSOUNG/BABY(PAI, UN-SOUNG)/3. Material Analysis/3.2 Basic Analysis/3.2.2 Chromaticity"
 # 최종 결과물 속성
 # point, L, a*, b*
 #%%
@@ -49,7 +49,8 @@ sns.heatmap(df_dist, cmap = 'RdYlGn', linewidths = 0.2)
 
 # %%
 # chromaticity 거리가 3 아래인 것들을 추출
-chromaticity_3under = df_dist[(df_dist<3) & (df_dist != 0)]
+# 실험 중 1로 수정
+chromaticity_3under = df_dist[(df_dist< 1) & (df_dist != 0)]
 
 # %%
 chromaticity_3under_match = pd.DataFrame(columns=['match'],index=chromaticity_3under.columns)
@@ -64,9 +65,10 @@ for co in chromaticity_3under.columns:
 # %%
 import datetime
 basename1 = os.getcwd()+'\\Chromaticity\\Chromaticity_3under_match'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-basename2 = os.getcwd()+'\\Chromaticity\\Chromaticity_heatmap'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+basename2 = os.getcwd()+'\\Chromaticity\\Chromaticity_dist'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
 
 chromaticity_3under_match.to_csv(basename1+'_Chromaticity.csv')
+df_dist.to_csv(basename2+'.csv')
 #plt = sns.get_figure()
 #plt.savefig(basename2 +'_output.png')
 

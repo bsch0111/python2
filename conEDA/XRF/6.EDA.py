@@ -41,41 +41,32 @@ data_40Kev = data_40Kev.transpose()
 # 참조 : https://shydev.tistory.com/29
 
 # 빈 리스트 선언 후 정렬된 15Kev, 40Kev 삽입
-data_sorted =  []
-data_sorted_keys =  []
+data_sorted =  pd.Series()
+data_sorted_keys =  pd.Series()
+
 #%%
+# 데이터를 Series에 저장
+
 for column in data_15Kev:
-    data_sorted.append(data_15Kev[column].sort_values(ascending=False).head(5).append(data_40Kev[column].sort_values(ascending=False).head(5)))
+    data_sorted[column] = data_15Kev[column].sort_values(ascending=False).head(5).append(data_40Kev[column].sort_values(ascending=False).head(5))
+
 #%%
 # 리스트에서 인덱스 값만 추출
 for column in data_15Kev:
-    data_sorted_keys.append(data_15Kev[column].sort_values(ascending=False).head(5).append(data_40Kev[column].sort_values(ascending=False).head(5)).keys())
+    p_keys = data_15Kev[column].sort_values(ascending=False).head(5).append(data_40Kev[column].sort_values(ascending=False).head(5)).keys()
+    keys = []
+    for key in p_keys :
+        keys.append(key)
+    data_sorted_keys[column] = keys
+
 #%%
-for i in data_sorted_keys :
-    p_n = 1
-    print()
-    print("POINT %d  : %s "% (p_n,i))
-    p_n = p_n + 1
-
-
-# %%
 import datetime
 import os
-basename = os.getcwd()+'\\XRF\\XRF_'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+basename1 = os.getcwd()+'\\XRF\\XRF_all_'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+basename2 = os.getcwd()+'\\XRF\\XRF_Keys_'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
 
-with open(basename+'_data_sorted.txt', 'w') as f :
+data_sorted.to_csv(basename1+'.csv')
+data_sorted_keys.to_csv(basename2+'.csv')
 
-    for item in data_sorted :
-        f.write("%s\n" % item)
-        
-
-# %%
-basename = os.getcwd()+'\\XRF\\XRF_'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-
-with open(basename+'_data_sorted.key.txt', 'w') as f :
-    p_n = 1
-    for item in data_sorted_keys :
-        f.write("%d : %s\n" %(p_n,item))
-        p_n = p_n + 1
 
 # %%
