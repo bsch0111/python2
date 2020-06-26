@@ -75,33 +75,10 @@ for co in chromaticity_n_under.columns:
         matching.append(var)
     chromaticity_n_under_pointpair.loc[co,'match'] = matching
 # %%
+# 출력하고 싶은 데이터 csv 형태로 출력
 import datetime
 basename1 = os.getcwd()+'\\Chromaticity\\Chromaticity_3under_match'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
 basename2 = os.getcwd()+'\\Chromaticity\\Chromaticity_dist'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
 
-chromaticity_3under_match.to_csv(basename1+'_Chromaticity.csv')
+chromaticity_n_under_pointpair.to_csv(basename1+'_Chromaticity.csv')
 df_dist.to_csv(basename2+'.csv')
-#plt = sns.get_figure()
-#plt.savefig(basename2 +'_output.png')
-
-#%%
-#정규표현식을 이용한 삭제
-'''
-import re
-i = "Index(['057', '058'], dtype='object', name='po.'"
-test = re.sub('[a-zA-Z]',' ',i).strip()
-'''
-
-# %%
-'''
-for co in chromaticity_3under.columns:
-    chromaticity_3under_match.loc[co,'match_point'] = re.sub('[a-zA-Z]',' ',chromaticity_3under_match[co]).strip()
-'''
-
-# %%
-# 데이터 output 저장용 코드
-'''
-import datetime
-basename = os.getcwd()+'\\Chromaticity\\Chromaticity_3under'+datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-chromaticity_3under.to_csv(basename+'_Chromaticity.csv')
-'''
