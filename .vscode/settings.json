@@ -1,5 +1,5 @@
 {
-    "python.dataScience.jupyterServerURI": "http://localhost:8888/?token=bba2bc6fdfb738ce4d4057b9f4f0444e95f31552358f3341&token=bba2bc6fdfb738ce4d4057b9f4f0444e95f31552358f3341",
+    "python.dataScience.jupyterServerURI": "http://localhost:8888/?token=c2331d8142ffb52ab3d98f38c6e82fa9bd40b3d4694eb75c&token=c2331d8142ffb52ab3d98f38c6e82fa9bd40b3d4694eb75c",
     "python.linting.pylintEnabled": false,
     "python.pythonPath": "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Anaconda3_64\\python.exe",
     "python.linting.enabled": true
