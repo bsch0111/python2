@@ -83,5 +83,67 @@ def last_friday():
     return  last_friday
 
 
-#25분까지 봄
+#
+#%%
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+# %%
+# 시계열 데이터 visualization할 때 쓰는 함수들
+df_apple = pd.read_csv('C:/inputcsv/tsa_tutorial_data/apple_stock.csv', index_col = 'Date', parse_dates =True)
+
+# %%
+df_apple[['Volume','Adj Close']].plot()
+# 문제점 : Volume 과 Adj Close의 변화량이 같지 않기 때문에 상대적으로 작은 변화량을 가진
+# Adj Close가 변하지 않는 것처럼 보인다.
+# %%
+df_apple['Adj Close'].plot()
+# %%
+# 데이터 왜곡 삭제
+df_apple[['Volume','Adj Close']].plot(secondary_y=['Volume'])
+
+# %%
+# 12인치, 8이니로 그림 확대
+# 실행되는 한 셀에는 데코레이션을 할 수 있음
+df_apple['Adj Close'].plot(figsize=(12,8))
+plt.ylabel('Close Price')
+plt.xlabel('Overwrite Date')
+plt.title('APPL')
+# %%
+# 범위지정 할수 있음
+df_apple['Adj Close']['2015-01-01':'2018-01-01']
+df_apple['Adj Close']['2015-01-01':'2018-01-01'].plot()
+
+# %%
+# 위 범위 지정이랑 같지만 x limited 방법 사용
+# : 는 pandas에서만 읽히는 문법이고, 그 외 (plot포함)은 ,으로 표현
+df_apple['Adj Close'].plot(xlim=['2015-01-01','2018-01-01'])
+
+# %%
+# y 범위 제한 
+df_apple['Adj Close'].plot(xlim=['2015-01-01','2018-01-01'],ylim=[70,180])
+
+# %%
+# x축의 값이 겹쳐서 변경해야하는 경우 (예제에서는 겹치지 않았음)
+index = df_apple['2015-01-01':'2018-01-01'].index
+stock = df_apple['2015-01-01':'2018-01-01']['Adj Close']
+
+#%%
+import matplotlib.dates as dates # 축 값의 포맷 변경 가능
+
+# %%
+fig, ax = plt.subplots(figsize=(15,3))
+# subplot 한개짜리가 만들어짐
+ax.plot_date(index, stock, '-')
+# - 는 line으로 그리라는 뜻, 눕히지 말고 
+# 이렇게 하면 겹침
+ax.xaxis.set_major_locator(dates.MonthLocator()) # 축 보이는 것을 변경
+ax.xaxis.set_major_formatter(dates.DateFormatter('%b\n%Y')) # 평상시에는 이런방식안쓰고 이미지 편집 쓰기도 함
+
+plt.tight_layout() #1차적인 해결방법, 꼭 써주는게 좋음
+fig.autofmt_xdate() #알아서 포맷을 수정해서 잘 보이게끔 수정
+
+# %%
+# 3강 끝
+
 # %%
